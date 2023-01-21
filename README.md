@@ -5,4 +5,5 @@
 # Music Gen 1.0
 
 [Weekly reports](https://github.com/astranero/music-generator/blob/main/Documentation/Weekly_reports.md)
+
 [Specification document](https://github.com/astranero/music-generator/blob/main/Documentation/Specification-document.md)
