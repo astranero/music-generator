@@ -17,3 +17,5 @@ Next, use the MarkovChain class to build the Markov Chain from the Trie and the 
 Finally, use the MarkovChain class to generate a new sequence of notes by providing a starting note and the desired length of the sequence.
 You can experiment with different sequence lengths and starting notes to generate different variations of music.
 
+Set a neighbor => Note node with frequencies and neighbors
+Converting message to bytes with mido, and inserting it to the Trie.. Test if it produces anything funny.
