@@ -1,6 +1,7 @@
 # Specification document
 
 I have knowledge of the mighty Python Programming language
+
 Bachelor of Science in Computer Science (Tietojenkäsittelytieteen kandidaatti TKT)
 
 ## Introduction
