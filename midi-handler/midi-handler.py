@@ -13,7 +13,9 @@ class MidiHandle:
         self._mid = None
         self._mixer = mixer
         self._mixer.init()
-        self._mixer.music.set_volume(0.5)
+        self._music = self._mixer.music
+        self._music.load(self._mav_file_path)
+        self._music.set_volume(0.5)
 
     def read_mid_file(self, filename):
         self._mid = MidiFile(self._directory + filename, clip=True)
@@ -24,18 +26,17 @@ class MidiHandle:
                 print(msg)
 
     def play_music(self):
-        self._mixer.music.load(self._mav_file_path)
-        self._mixer.music.play()
-        return self._mixer.music
+        self._music.play()
+        return self._music
 
     def pause_music(self):
-        self._mixer.music.pause()
+        self._music.pause()
 
     def resume_music(self):
-        self._mixer.music.unpause()
+        self._music.unpause()
 
     def stop_music(self):
-        self._mixer.music.stop()
+        self._music.stop()
 
     def generate_mav(self, filename):
         self._file_synth.midi_to_audio(self._directory + filename, "generated.wav")
