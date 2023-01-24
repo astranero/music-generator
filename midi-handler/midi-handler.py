@@ -5,7 +5,7 @@ from midi2audio import FluidSynth
 from pygame import mixer
 
 
-class MidiHandle:
+class MidiHandler:
     def __init__(self):
         self._directory = os.fsdecode(os.getcwd() + "/Data/")
         self._file_synth = FluidSynth()
@@ -25,7 +25,8 @@ class MidiHandle:
     def print_messages(self):
         for i, track in enumerate(self._mid.tracks):
             for msg in track:
-                print(msg)
+                if msg.type == ("note_on" or "note_off"):
+                    print(msg.note, round(msg.time, -1))
 
     def play_music(self):
         mixer.music.load(self._mav_file_path)
@@ -46,7 +47,7 @@ class MidiHandle:
 
 
 if __name__ == "__main__":
-    handler = MidiHandle()
+    handler = MidiHandler()
     handler.generate_mav("1943 - Assault On Surface Forces B.MID")
     music = handler.play_music()
     handler.read_mid_file("1943 - Assault On Surface Forces B.MID")
