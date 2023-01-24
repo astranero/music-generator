@@ -1,13 +1,19 @@
 from mido import Message, MidiFile
 import os
+import time
 from midi2audio import FluidSynth
+from pygame import mixer
 
 
 class MidiHandle:
     def __init__(self):
         self._directory = os.fsdecode(os.getcwd() + "/Data/")
         self._file_synth = FluidSynth()
+        self._mav_file_path = os.fsdecode(os.getcwd() + "/generated.wav")
         self._mid = None
+        self._mixer = mixer
+        self._mixer.init()
+        self._mixer.music.set_volume(0.5)
 
     def read_mid_file(self, filename):
         self._mid = MidiFile(self._directory + filename, clip=True)
@@ -17,8 +23,19 @@ class MidiHandle:
             for msg in track:
                 print(msg)
 
-    def play_midi(self, filename):
-        self._file_synth.play_midi(self._directory + filename)
+    def play_music(self):
+        self._mixer.music.load(self._mav_file_path)
+        self._mixer.music.play()
+        return self._mixer.music
+
+    def pause_music(self):
+        self._mixer.music.pause()
+
+    def resume_music(self):
+        self._mixer.music.unpause()
+
+    def stop_music(self):
+        self._mixer.music.stop()
 
     def generate_mav(self, filename):
         self._file_synth.midi_to_audio(self._directory + filename, "generated.wav")
@@ -26,6 +43,6 @@ class MidiHandle:
 
 if __name__ == "__main__":
     handler = MidiHandle()
-    handler.read_mid_file("3x3 Eyes (1992) - MUS_36.MID")
-    handler.play_midi("3x3 Eyes (1992) - MUS_36.MID")
-    handler.print_messages()
+    music = handler.play_music()
+    while music.get_busy():
+        time.sleep(100)

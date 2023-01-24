@@ -11,6 +11,7 @@ python = "^3.10"
 mido = "^1.2.10"
 midi2audio = "^0.1.1"
 fluidsynth = "^0.2"
+pygame = "^2.1.2"
 
 
 [build-system]
