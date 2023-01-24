@@ -46,4 +46,6 @@ if __name__ == "__main__":
     handler = MidiHandle()
     music = handler.play_music()
     while music.get_busy():
-        time.sleep(100)
+        time.sleep(10)
+    handler.pause_music()
+    while handler.
