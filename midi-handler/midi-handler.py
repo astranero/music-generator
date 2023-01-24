@@ -11,11 +11,13 @@ class MidiHandle:
         self._file_synth = FluidSynth()
         self._mav_file_path = os.fsdecode(os.getcwd() + "/generated.wav")
         self._mid = None
-        self._mixer = mixer
-        self._mixer.init()
-        self._music = self._mixer.music
-        self._music.load(self._mav_file_path)
-        self._music.set_volume(0.5)
+        self._music = None
+        self._initiate_mixer()
+
+    def _initiate_mixer(self):
+        mixer.init()
+        mixer.music.set_volume(0.5)
+        self._music = mixer.music
 
     def read_mid_file(self, filename):
         self._mid = MidiFile(self._directory + filename, clip=True)
@@ -26,6 +28,7 @@ class MidiHandle:
                 print(msg)
 
     def play_music(self):
+        mixer.music.load(self._mav_file_path)
         self._music.play()
         return self._music
 
@@ -44,8 +47,14 @@ class MidiHandle:
 
 if __name__ == "__main__":
     handler = MidiHandle()
+    handler.generate_mav("1943 - Assault On Surface Forces B.MID")
     music = handler.play_music()
+    handler.read_mid_file("1943 - Assault On Surface Forces B.MID")
+    handler.print_messages()
     while music.get_busy():
         time.sleep(10)
-    handler.pause_music()
-    while handler.
+        handler.pause_music()
+    time.sleep(5)
+    handler.resume_music()
+    while music.get_busy():
+        time.sleep(5)
