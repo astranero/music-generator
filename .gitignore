@@ -2,7 +2,8 @@
 *cache
 notes.md
 .venv
-generated.wav
+*generated.wav
+*generated.mid
 *__pycache__
 *.pytest_cache
 Data
