@@ -1,18 +1,25 @@
 import os
-import time
+import random
+import sys
 
-from mido import Message, MidiFile
+from mido import Message, MidiFile, MidiTrack
 from midi2audio import FluidSynth
 from pygame import mixer
+
+sys.path.append(os.fsdecode(os.getcwd() + "/src/"))
+from markov_chain.markov import MarkovChain
 
 
 class MidiHandler:
     def __init__(self):
         self._directory = os.fsdecode(os.getcwd() + "/Data/")
-        self._file_synth = FluidSynth()
+        self._file_synth = FluidSynth(
+            sound_font=(os.fsdecode(os.getcwd() + "/undertale.sf2"))
+        )
         self._mav_file_path = os.fsdecode(os.getcwd() + "/generated.wav")
         self._mid = None
         self._music = None
+        self.markov = MarkovChain()
         self._initiate_mixer()
 
     def _initiate_mixer(self):
@@ -20,14 +27,72 @@ class MidiHandler:
         mixer.music.set_volume(0.5)
         self._music = mixer.music
 
+    def initiate_markov(self):
+        print("Reading data to Trie data structure")
+        filenames = [
+            f for f in os.listdir(self._directory) if f.endswith((".MID", ".mid"))
+        ]
+
+        filenames = [
+            f for f in os.listdir(self._directory) if f.endswith((".MID", ".mid"))
+        ]
+        mid_files = []
+        for filename in filenames:
+            try:
+                mid_files.append(MidiFile((self._directory + filename)))
+            except (EOFError, ValueError, IOError):
+                pass
+        mid_tracks = [t for mid in mid_files for i, t in enumerate(mid.tracks)]
+
+        for i, track in enumerate(mid_tracks):
+            notes = []
+            count = 0
+            for msg in track:
+                if msg.type == "note_on":
+                    notes.append(msg.note)
+                if count == 8:
+                    count = 0
+                    self.markov.insert(notes)
+                    notes = []
+                count += 1
+
+        print("Initiation of Trie data structure is done.")
+
+    def generate_midi(self):
+
+        print("Generating melody...")
+
+        notes = []
+        while len(notes) < 500:
+            melody = self.markov.generate_melody()
+            notes = notes + melody
+
+        print("Melody generation done.")
+
+        midf = MidiFile()
+        track = MidiTrack()
+        midf.tracks.append(track)
+        time_tick = 0
+        count = 0
+        for note in notes:
+            track.append(
+                Message(
+                    "note_on",
+                    note=note,
+                    velocity=100,
+                    time=time_tick,
+                )
+            )
+            if count == 3:
+                count = 0
+                time_tick += random.randint(1, 10)
+            count += 1
+
+        midf.save(self._directory + "generated.mid")
+        self.generate_mav(self._directory + "generated.mid")
+
     def read_mid_file(self, filename):
         self._mid = MidiFile(self._directory + filename, clip=True)
-
-    def print_messages(self):
-        for i, track in enumerate(self._mid.tracks):
-            for msg in track:
-                if msg.type == ("note_on" or "note_off"):
-                    print(msg.note, round(msg.time, -1))
 
     def play_music(self):
         mixer.music.load(self._mav_file_path)
@@ -43,20 +108,12 @@ class MidiHandler:
     def stop_music(self):
         self._music.stop()
 
-    def generate_mav(self, filename):
-        self._file_synth.midi_to_audio(self._directory + filename, "generated.wav")
+    def generate_mav(self, file_path):
+        self._file_synth.midi_to_audio(file_path, "generated.wav")
 
 
 if __name__ == "__main__":
     handler = MidiHandler()
-    handler.generate_mav("1943 - Assault On Surface Forces B.MID")
-    music = handler.play_music()
-    handler.read_mid_file("1943 - Assault On Surface Forces B.MID")
-    handler.print_messages()
-    while music.get_busy():
-        time.sleep(10)
-        handler.pause_music()
-    time.sleep(5)
-    handler.resume_music()
-    while music.get_busy():
-        time.sleep(5)
+    handler.initiate_markov()
+    handler.generate_midi()
+    handler.play_music()
