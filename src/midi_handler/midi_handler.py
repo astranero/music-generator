@@ -72,17 +72,21 @@ class MidiHandler:
         midf = MidiFile()
         track = MidiTrack()
         midf.tracks.append(track)
-        tick_time = 0
+        time_tick = 0
+        count = 0
         for note in notes:
             track.append(
                 Message(
                     "note_on",
                     note=note,
-                    velocity=random.randint(90, 120),
-                    time=tick_time,
+                    velocity=100,
+                    time=time_tick,
                 )
             )
-            tick_time += 5
+            if count == 3:
+                count = 0
+                time_tick += random.randint(1, 10)
+            count += 1
 
         midf.save(self._directory + "generated.mid")
         self.generate_mav(self._directory + "generated.mid")
