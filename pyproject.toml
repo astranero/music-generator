@@ -12,6 +12,8 @@ mido = "^1.2.10"
 midi2audio = "^0.1.1"
 fluidsynth = "^0.2"
 pygame = "^2.1.2"
+pytest = "^7.2.1"
+invoke = "^2.0.0"
 
 
 [build-system]
