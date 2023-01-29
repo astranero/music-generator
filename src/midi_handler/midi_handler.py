@@ -1,6 +1,7 @@
-from mido import Message, MidiFile
 import os
 import time
+
+from mido import Message, MidiFile
 from midi2audio import FluidSynth
 from pygame import mixer
 

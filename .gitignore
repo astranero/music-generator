@@ -3,3 +3,5 @@
 notes.md
 .venv
 generated.wav
+*__pycache__
+*.pytest_cache
