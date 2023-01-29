@@ -8,3 +8,6 @@ notes.md
 *.pytest_cache
 Data
 undertale.sf2
+generated.wav
+*__pycache__
+*.pytest_cache
