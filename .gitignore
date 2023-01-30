@@ -11,3 +11,6 @@ undertale.sf2
 generated.wav
 *__pycache__
 *.pytest_cache
+*.mid
+*.MID
+*.wav
