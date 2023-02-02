@@ -1,7 +1,4 @@
-import time
-import os
 import pytest
-import mido
 from markov_chain.markov import MarkovChain
 from trie_module.trie import Trie
 

@@ -3,7 +3,7 @@ import random
 import sys
 from typing import List
 
-from mido import Message, MidiFile, MidiTrack, MetaMessage
+from mido import Message, MidiFile, MidiTrack, KeySignatureError
 from midi2audio import FluidSynth
 from pygame import mixer
 from dotenv import dotenv_values
@@ -63,7 +63,7 @@ class MarkovPlayer:
         for filename in filenames:
             try:
                 midifiles.append(MidiFile((self._data_directory + filename)))
-            except Exception:
+            except KeySignatureError:
                 pass
         return midifiles
 
@@ -144,11 +144,21 @@ class MarkovPlayer:
         midifile.tracks.append(track)
         time_tick = 0
         velocity = 0
-        channel = 4
+        channel = 5
 
         for i, note in enumerate(notes):
-            if i < len(notes) - 10:
-                time_tick += 2
+            if i <= 20:
+                track.append(
+                    self._note(
+                        note=note,
+                        velocity=0,
+                        time_tick=0,
+                        channel=channel,
+                    )
+                )
+
+            if 20 < i < len(notes) - 20:
+                time_tick += 1
                 track.append(
                     self._note(
                         note=note,
@@ -157,14 +167,9 @@ class MarkovPlayer:
                         channel=channel,
                     )
                 )
-
-                velocity += random.randint(1, 2)
-                if velocity > 127:
-                    velocity = random.randint(98, 104)
-                elif velocity < 0:
-                    velocity = 0
+                velocity += random.randint(3, 5)
             else:
-                time_tick += random.randint(1, 2)
+                time_tick += 1
                 track.append(
                     self._note(
                         note=note,
@@ -173,8 +178,11 @@ class MarkovPlayer:
                         channel=channel,
                     )
                 )
-                velocity -= 5
-
+                velocity -= random.randint(3, 5)
+            if velocity > 127:
+                velocity = random.randint(98, 104)
+            elif velocity < 0:
+                velocity = 0
         return midifile
 
     def _note(
@@ -192,7 +200,7 @@ class MarkovPlayer:
             time=time_tick,
         )
 
-    def initiate_markov(self, depth: int = 1):
+    def initiate_markov(self, depth: int = 4):
         print("Setting up Markov Chain: Loading filenames...")
         filenames = self._get_filenames()
         print(" > Filenames loaded: Generating midi files...")
@@ -208,7 +216,7 @@ class MarkovPlayer:
         self,
         filename: str,
         prefix_notes: List[int] = None,
-        depth: int = 4,
+        depth: int = 2,
         melody_lenght: int = 250,
     ):
         self._set_filenames(filename)

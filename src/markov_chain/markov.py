@@ -53,8 +53,9 @@ class MarkovChain:
         for note in prefix_notes:
             if note in node.children:
                 node = node.children[note]
-            else:
-                node = self._trie.get_root()
+
+        if node.terminal:
+            node = self._trie.get_root()
 
         while not node.terminal:
             new_note = self._trie.get_random_note(node)
@@ -62,9 +63,9 @@ class MarkovChain:
             node = node.children[new_note]
 
         while len(self._melody) <= melody_lenght - self._prefix_lenght:
-            current = self._melody[
-                len(self._melody) - depth - 1 : len(self._melody) - 1
-            ]
+            current = self._melody[len(self._melody) - depth : len(self._melody)]
+            print(self._melody)
+            print(self._melody[len(self._melody) - depth : len(self._melody)])
             self._melody = self.generate_melody(
                 prefix_notes=current,
                 depth=depth,
