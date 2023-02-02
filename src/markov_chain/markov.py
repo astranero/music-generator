@@ -64,8 +64,6 @@ class MarkovChain:
 
         while len(self._melody) <= melody_lenght - self._prefix_lenght:
             current = self._melody[len(self._melody) - depth : len(self._melody)]
-            print(self._melody)
-            print(self._melody[len(self._melody) - depth : len(self._melody)])
             self._melody = self.generate_melody(
                 prefix_notes=current,
                 depth=depth,

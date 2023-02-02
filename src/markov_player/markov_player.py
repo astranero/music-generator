@@ -147,17 +147,19 @@ class MarkovPlayer:
         channel = 5
 
         for i, note in enumerate(notes):
-            if i <= 20:
+            if i <= 50:
+                time_tick += 1
+                velocity += 1
                 track.append(
                     self._note(
                         note=note,
-                        velocity=0,
+                        velocity=velocity,
                         time_tick=0,
                         channel=channel,
                     )
                 )
 
-            if 20 < i < len(notes) - 20:
+            if 50 < i < len(notes) - 50:
                 time_tick += 1
                 track.append(
                     self._note(
@@ -168,6 +170,7 @@ class MarkovPlayer:
                     )
                 )
                 velocity += random.randint(3, 5)
+
             else:
                 time_tick += 1
                 track.append(
@@ -178,7 +181,8 @@ class MarkovPlayer:
                         channel=channel,
                     )
                 )
-                velocity -= random.randint(3, 5)
+                velocity -= 5
+
             if velocity > 127:
                 velocity = random.randint(98, 104)
             elif velocity < 0:
