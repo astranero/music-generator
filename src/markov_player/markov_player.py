@@ -1,10 +1,9 @@
 import os
 import random
 import sys
-import time
 from typing import List
 
-from mido import Message, MidiFile, MidiTrack
+from mido import Message, MidiFile, MidiTrack, MetaMessage
 from midi2audio import FluidSynth
 from pygame import mixer
 from dotenv import dotenv_values
@@ -51,7 +50,7 @@ class MarkovPlayer:
         ]
         return filenames
 
-    def _get_mid_files(self, filenames: List[str]) -> List[MidiFile]:
+    def _get_midi_files(self, filenames: List[str]) -> List[MidiFile]:
         """A method to generate MidiFile objects from midi files.
 
         Args:
@@ -60,15 +59,15 @@ class MarkovPlayer:
         Returns:
             List[MidiFile]: A list of MidiFile objects.
         """
-        mid_files = []
+        midifiles = []
         for filename in filenames:
             try:
-                mid_files.append(MidiFile((self._data_directory + filename)))
+                midifiles.append(MidiFile((self._data_directory + filename)))
             except Exception:
                 pass
-        return mid_files
+        return midifiles
 
-    def _get_tracks(self, mid_files: List[MidiFile]) -> List[MidiTrack]:
+    def _get_tracks(self, midifiles: List[MidiFile]) -> List[MidiTrack]:
         """A method to parse MidiTrack objects from a list of MidiFiles.
 
         Args:
@@ -77,91 +76,146 @@ class MarkovPlayer:
         Returns:
             List[MidiTrack]: A list of MidiTrack objects.
         """
-        mid_tracks = [track for mid in mid_files for track in mid.tracks]
+        mid_tracks = [track for mid in midifiles for track in mid.tracks]
         return mid_tracks
 
-    def _insert_into_trie(self, tracks: List[MidiTrack]) -> None:
+    def _track_messages_to_notes(self, tracks: List[MidiTrack]) -> List[int]:
+        for i, track in enumerate(tracks):
+            notes = []
+            for msg in track:
+                if msg.type == "note_on":
+                    notes.append(msg.note)
+            yield notes
+
+    def _notes_depth_size_sublist(
+        self, tracks: List[MidiTrack], depth: int
+    ) -> List[List[int]]:
+
+        for notes in self._track_messages_to_notes(tracks):
+            for i in range(len(notes) - depth + 1):
+                yield notes[i : i + depth]
+
+    def _insert_into_trie(self, tracks: List[MidiTrack], depth: int) -> None:
         """A method that inserts string notes of lenght 2 to 12 i from MidiTrack objects
         into Markov Chains Trie data structure.
 
         Args:
             tracks (List[MidiTrack]): A list of MidiTrack objects.
         """
-        for i, track in enumerate(tracks):
-            notes = ""
-            count = 0
-            for msg in track:
-                if msg.type == "note_on":
-                    notes += str(msg.note)
-                    notes += ";"
-                if count == random.randint(2, 12):
-                    count = 0
-                    self._markov.insert(notes)
-                    notes = ""
-                count += 1
 
-    def _generate_notes(self) -> List[str]:
+        for sequence in self._notes_depth_size_sublist(tracks, depth=depth):
+            self._markov.insert(sequence)
+
+    def _generate_notes(
+        self,
+        prefix_notes: List[int],
+        depth: int,
+        melody_lenght: int,
+    ) -> List[int]:
         """A method that generates a list of notes.
 
         Returns:
             List[str]: A list of string type notes.
         """
         print("Generating melody...")
-        melody = self._markov.generate_melody(lenght=2000)
+        notes = self._markov.generate_melody(
+            prefix_notes=prefix_notes, depth=depth, melody_lenght=melody_lenght
+        )
         print("Melody generation is complete.")
-        notes = [note for note in list(filter(None, melody.split(";")))]
         return notes
 
-    def _create_midifile(self) -> MidiFile:
+    def _create_midifile(
+        self,
+        prefix_notes: List[int],
+        depth: int,
+        melody_lenght: int,
+    ) -> MidiFile:
         """A method that creates a midifile using a Markov Chain.
 
         Returns:
             MidiFile: A MidiFile object.
         """
-        notes = self._generate_notes()
-        midifile = MidiFile()
+        notes = self._generate_notes(
+            prefix_notes=prefix_notes, depth=depth, melody_lenght=melody_lenght
+        )
+
+        midifile = MidiFile(type=2)
         track = MidiTrack()
         midifile.tracks.append(track)
         time_tick = 0
-        count = 0
-        volume = 100
+        velocity = 0
+        channel = 4
 
-        for note in notes:
-            track.append(Message("note_on", note=note, velocity=volume, time=time_tick))
+        for i, note in enumerate(notes):
+            if i < len(notes) - 10:
+                time_tick += 2
+                track.append(
+                    self._note(
+                        note=note,
+                        velocity=velocity,
+                        time_tick=time_tick,
+                        channel=channel,
+                    )
+                )
 
-            if count == random.randint(1, 2):
-                time_tick += random.randint(0, 2)
-                count = 0
+                velocity += random.randint(1, 2)
+                if velocity > 127:
+                    velocity = random.randint(98, 104)
+                elif velocity < 0:
+                    velocity = 0
             else:
-                time_tick += 1
-
-            volume += random.randint(4, 5)
-            count += 1
-
-            if volume > 127:
-                volume = 127
-
-            elif volume < 0:
-                volume = 0
+                time_tick += random.randint(1, 2)
+                track.append(
+                    self._note(
+                        note=note,
+                        velocity=velocity,
+                        time_tick=time_tick,
+                        channel=channel,
+                    )
+                )
+                velocity -= 5
 
         return midifile
 
-    def initiate_markov(self):
+    def _note(
+        self,
+        time_tick,
+        note: int,
+        velocity: int,
+        channel: int,
+    ):
+        return Message(
+            "note_on",
+            channel=channel,
+            note=int(note),
+            velocity=velocity,
+            time=time_tick,
+        )
+
+    def initiate_markov(self, depth: int = 1):
         print("Setting up Markov Chain: Loading filenames...")
         filenames = self._get_filenames()
-        print(" > Filenames loaded: Generating midfiles...")
-        mid_files = self._get_mid_files(filenames)
+        print(" > Filenames loaded: Generating midi files...")
+        midifiles = self._get_midi_files(filenames)
         print(" > Generation of midfiles complete: Setting up tracks...")
-        tracks = self._get_tracks(mid_files)
+        tracks = self._get_tracks(midifiles)
         print(" > Inserting data to Trie Data Structure.")
-        self._insert_into_trie(tracks)
+        self._insert_into_trie(tracks, depth=depth)
         print(" > Initiation of Trie Data Structure is done.")
         print("Setting up Markov Chain is complete.")
 
-    def generate_music(self, filename: str):
+    def generate_music(
+        self,
+        filename: str,
+        prefix_notes: List[int] = None,
+        depth: int = 4,
+        melody_lenght: int = 250,
+    ):
         self._set_filenames(filename)
         print("Generation of new midifile.")
-        midifile = self._create_midifile()
+        midifile = self._create_midifile(
+            prefix_notes=prefix_notes, depth=depth, melody_lenght=melody_lenght
+        )
         print(" > Saving midifile...")
         self._save_midifile(midifile)
         print(" > Generating wav file...")
@@ -199,5 +253,4 @@ if __name__ == "__main__":
     player = MarkovPlayer()
     player.initiate_markov()
     player.generate_music("Rockin")
-    while player.play_music("Rockin"):
-        time.sleep(25)
+    player.play_music("Rockin")

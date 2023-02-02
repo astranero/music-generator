@@ -5,6 +5,7 @@ Returns:
 """
 
 import random
+from typing import List
 
 
 class Node:
@@ -27,19 +28,18 @@ class Node:
 
 class Trie:
     def __init__(self):
-        self._root = Node("")
+        self._root = Node(None)
 
     def get_root(self):
         return self._root
 
-    def insert(self, notes: str):
+    def insert(self, notes: List[int]):
         """
         Insert a sequence of notes in to the trie
         Args:
             notes (List[int]): a list of notes to be inserted into the trie
         """
 
-        notes = notes.split(";")
         node = self._root
         for note in notes:
             if note not in node.children:
@@ -64,10 +64,9 @@ class Trie:
         for note in node.children:
             probability[note] = node.children[note].frequency
             total += node.children[note].frequency
-
         probability = {
             note: frequency / total for note, frequency in probability.items()
         }
         notes = list(probability.keys())
         probabilities = list(probability.values())
-        return str(random.choices(population=notes, weights=probabilities, k=1)[0])
+        return random.choices(population=notes, weights=probabilities, k=1)[0]
