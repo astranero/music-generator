@@ -58,3 +58,26 @@ So I had to do it from midi handler
 
 - Sound of generated mav sounds awful, so may be creating trying to make it sound good.
 - I still haven't created UI, so that should be next priority.
+
+## Week 3 Report (Hours 15)
+
+- [x] Fix and refactor code
+- [x] Trying different codes snippets and their affect on the sound
+- [x] Fix errors related to the changes in the code
+- [x] Add coverage report
+
+### Problems
+
+- Didn't have any problems this week, because everything was basically same as previous week. Just went through different ways of doing the same.
+
+### What I have Learned
+
+- I have learned that it's possible to do Markov Chain with recursion too, but still at the end it was easier with while loop.
+
+### Questions
+
+- None
+
+### Next Week
+
+- Now that my music sounds good I should do more test to be sure that data isn't being used too much. But before that I will create UI and also test MarkovPlayer class.
