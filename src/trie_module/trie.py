@@ -69,4 +69,6 @@ class Trie:
         }
         notes = list(probability.keys())
         probabilities = list(probability.values())
-        return random.choices(population=notes, weights=probabilities, k=1)[0]
+        if probabilities and notes:
+            return random.choices(population=notes, weights=probabilities, k=1)[0]
+        return self.get_random_note(self._root)

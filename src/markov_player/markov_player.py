@@ -63,7 +63,7 @@ class MarkovPlayer:
         for filename in filenames:
             try:
                 midifiles.append(MidiFile((self._data_directory + filename)))
-            except KeySignatureError:
+            except (EOFError, KeySignatureError, ValueError, OSError):
                 pass
         return midifiles
 
@@ -110,7 +110,7 @@ class MarkovPlayer:
         self,
         prefix_notes: List[int],
         depth: int,
-        melody_lenght: int,
+        melody_length: int,
     ) -> List[int]:
         """A method that generates a list of notes.
 
@@ -119,7 +119,7 @@ class MarkovPlayer:
         """
         print("Generating melody...")
         notes = self._markov.generate_melody(
-            prefix_notes=prefix_notes, depth=depth, melody_lenght=melody_lenght
+            prefix_notes=prefix_notes, depth=depth, melody_length=melody_length
         )
         print("Melody generation is complete.")
         return notes
@@ -128,7 +128,7 @@ class MarkovPlayer:
         self,
         prefix_notes: List[int],
         depth: int,
-        melody_lenght: int,
+        melody_length: int,
     ) -> MidiFile:
         """A method that creates a midifile using a Markov Chain.
 
@@ -136,19 +136,19 @@ class MarkovPlayer:
             MidiFile: A MidiFile object.
         """
         notes = self._generate_notes(
-            prefix_notes=prefix_notes, depth=depth, melody_lenght=melody_lenght
+            prefix_notes=prefix_notes, depth=depth, melody_length=melody_length
         )
 
-        midifile = MidiFile(type=2)
+        midifile = MidiFile()
         track = MidiTrack()
         midifile.tracks.append(track)
         time_tick = 0
         velocity = 0
-        channel = 5
+        channel = 10
 
         for i, note in enumerate(notes):
             if i <= 50:
-                time_tick += 1
+                time_tick += 2
                 velocity += 1
                 track.append(
                     self._note(
@@ -160,7 +160,7 @@ class MarkovPlayer:
                 )
 
             if 50 < i < len(notes) - 50:
-                time_tick += 1
+                time_tick += 2
                 track.append(
                     self._note(
                         note=note,
@@ -172,7 +172,7 @@ class MarkovPlayer:
                 velocity += random.randint(3, 5)
 
             else:
-                time_tick += 1
+                time_tick += 2
                 track.append(
                     self._note(
                         note=note,
@@ -181,7 +181,7 @@ class MarkovPlayer:
                         channel=channel,
                     )
                 )
-                velocity -= 5
+                velocity -= 2
 
             if velocity > 127:
                 velocity = random.randint(98, 104)
@@ -204,7 +204,7 @@ class MarkovPlayer:
             time=time_tick,
         )
 
-    def initiate_markov(self, depth: int = 4):
+    def initiate_markov(self, depth: int = 2):
         print("Setting up Markov Chain: Loading filenames...")
         filenames = self._get_filenames()
         print(" > Filenames loaded: Generating midi files...")
@@ -221,12 +221,12 @@ class MarkovPlayer:
         filename: str,
         prefix_notes: List[int] = None,
         depth: int = 2,
-        melody_lenght: int = 250,
+        melody_length: int = 500,
     ):
         self._set_filenames(filename)
         print("Generation of new midifile.")
         midifile = self._create_midifile(
-            prefix_notes=prefix_notes, depth=depth, melody_lenght=melody_lenght
+            prefix_notes=prefix_notes, depth=depth, melody_length=melody_length
         )
         print(" > Saving midifile...")
         self._save_midifile(midifile)
