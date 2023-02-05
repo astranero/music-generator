@@ -45,19 +45,20 @@ class MarkovChain:
         self._melody = prefix_notes
 
         for note in prefix_notes:
-            if not node.terminal:
+            if not node.terminal and note in node.children:
                 node = node.children[note]
 
         while len(self._melody) <= melody_length - self._prefix_lenght:
             current_node = node
             current = self._melody[-depth:]
             for note in current:
-                if note in current_node.children:
+                if note in current_node.children and not current_node.terminal:
                     current_node = current_node.children[note]
-                else:
-                    current_node = self._trie.get_root()
 
             new_note = self._trie.get_random_note(current_node)
             self._melody.append(new_note)
-            node = current_node.children[new_note]
+            try:
+                node = current_node.children[new_note]
+            except KeyError:
+                node = self._trie.get_root()
         return self._melody

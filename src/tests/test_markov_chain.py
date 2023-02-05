@@ -11,7 +11,7 @@ class TestMarkov:
     def test_generate_melody(self):
         markov = MarkovChain(trie=pytest.trie)
         markov.insert(["A", "B", "C"])
-        melody = markov.generate_melody(prefix_notes=["A"], depth=0, melody_lenght=3)
+        melody = markov.generate_melody(prefix_notes=["A"], depth=0, melody_length=3)
         melody = "".join(melody)
         assert melody == "ABC"
 
@@ -25,10 +25,10 @@ class TestMarkov:
         markov.insert(["A", "A", "F", "E"])
 
         melody = markov.generate_melody(
-            prefix_notes=["A", "B"], depth=3, melody_lenght=4
+            prefix_notes=["A", "B"], depth=3, melody_length=4
         )
         melody = "".join(melody)
-        assert (melody == "ABCB") or (melody == "ABDC")
+        assert (melody == "ABC") or (melody == "ABD")
 
     def test_nonexisting_note_generate_melody(self):
         """
@@ -40,7 +40,7 @@ class TestMarkov:
         markov.insert(["A", "C", "D"])
         markov.insert(["C", "B", "C", "E"])
         melody = markov.generate_melody(
-            prefix_notes=["A", "B", "G"], depth=3, melody_lenght=3
+            prefix_notes=["A", "B", "G"], depth=3, melody_length=3
         )
         assert melody
 
@@ -49,11 +49,11 @@ class TestMarkov:
         markov.insert(["A", "B", "C"])
         markov.insert(["A", "C", "D"])
         markov.insert(["C", "B", "C", "E"])
-        melody = markov.generate_melody(prefix_notes=[], depth=0, melody_lenght=0)
+        melody = markov.generate_melody(prefix_notes=[], depth=0, melody_length=0)
         assert melody
 
     def test_empty_trie_generate_melody(self):
         markov = MarkovChain(trie=pytest.trie)
         markov.insert(["A"])
-        melody = markov.generate_melody(prefix_notes=["A"], depth=1, melody_lenght=1)
+        melody = markov.generate_melody(prefix_notes=["A"], depth=1, melody_length=1)
         assert "A" in melody
