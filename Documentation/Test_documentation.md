@@ -8,6 +8,5 @@
 - Insertion of nodes into the trie in the correct order.
 - Proper frequency tracking of children nodes.
 ### Unit tests for the Markov Chain class should verify the following:
-
-Generation of notes based on the depth of the Markov Chain and their relation to the data with proper probability distribution.
-That the generated notes are related to the given prefix notes as expected.
+- Generation of notes based on the depth of the Markov Chain and their relation to the data with proper probability distribution.
+- That the generated notes are related to the given prefix notes as expected.
