@@ -8,10 +8,10 @@ from midi2audio import FluidSynth
 from pygame import mixer
 from dotenv import dotenv_values
 
+env_values = dotenv_values()
 sys.path.append(os.fsdecode(os.getcwd() + "/src/"))
 from markov_chain.markov import MarkovChain
 
-env_values = dotenv_values(".env")
 
 
 class MarkovPlayer:
@@ -20,7 +20,7 @@ class MarkovPlayer:
     """
 
     def __init__(self, markov: MarkovChain = MarkovChain()):
-        self._data_directory = os.fsdecode(os.getcwd() + env_values["DATA_PATH"])
+        self._data_directory = os.fsdecode(os.getcwd() + "/../" + env_values["DATA_PATH"])
         self._file_synth = FluidSynth(
             sound_font=(os.fsdecode(os.getcwd() + env_values["SOUNDFONT"]))
         )
@@ -207,6 +207,8 @@ class MarkovPlayer:
     def initiate_markov(self, depth: int = 2):
         print("Setting up Markov Chain: Loading filenames...")
         filenames = self._get_filenames()
+        if not filenames:
+            raise FileNotFoundError()
         print(" > Filenames loaded: Generating midi files...")
         midifiles = self._get_midi_files(filenames)
         print(" > Generation of midfiles complete: Setting up tracks...")
@@ -219,10 +221,21 @@ class MarkovPlayer:
     def generate_music(
         self,
         filename: str,
-        prefix_notes: List[int] = None,
+        prefix_notes: str = None,
         depth: int = 2,
         melody_length: int = 500,
     ):
+        """A method that generates music.
+
+        Args:
+            filename (str): A name for the generated music file.
+            prefix_notes (str, optional): A sequence of notes that the generation of music is based on. Defaults to None.
+            depth (int, optional): The depth of the data to be used. Defaults to 2.
+            melody_length (int, optional): The lenght of the music file. Defaults to 500.
+        """
+        if prefix_notes:
+            prefix_notes = self._listify_prefix_notes(prefix_notes)
+
         self._set_filenames(filename)
         print("Generation of new midifile.")
         midifile = self._create_midifile(
@@ -236,6 +249,17 @@ class MarkovPlayer:
 
     def _save_midifile(self, midifile: MidiFile):
         midifile.save(self._file_path + self._filename_mid)
+
+    def _listify_prefix_notes(self, prefix_notes: str) -> List[int]:
+        """A method that turns string prefix notes into list.
+
+        Args:
+            prefix_notes (str): A string of prefix notes
+
+        Returns:
+            List[int]: A list of integer notes
+        """
+        return [int(i) for i in prefix_notes.split(";")]
 
     def play_music(self, filename: str):
         mixer.music.load(self._file_path + filename + ".wav")
