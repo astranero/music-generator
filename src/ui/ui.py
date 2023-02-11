@@ -17,6 +17,7 @@ class UserInterface:
             "g": self._generate_music,
         }
         self._start_menu()
+        self._trie_initiated = False
 
     def _start_menu(self):
         print(
@@ -24,10 +25,16 @@ class UserInterface:
         )
         tprint("Music Generator")
         self._print_picture()
-        print(self._start_commands())
         while True:
+            print(
+                "__________________________________________________________________________________________________________________________"
+            )
 
+            print(self._start_commands())
             key = str(input("Command: "))
+            print(
+                "__________________________________________________________________________________________________________________________"
+            )
             if key == "e":
                 break
             try:
@@ -35,16 +42,23 @@ class UserInterface:
                 func()
             except KeyError:
                 print("Incorrect command!")
+        print(
+            "__________________________________________________________________________________________________________________________"
+        )
 
     def _play_menu(self):
         playing = True
-        if self._filename:
+        tprint("Music Generator")
+        self._print_picture()
+        if self._filename or self._filename == "":
             self._player.load_music(self._filename)
             self._player.play_music()
             while True:
-                self._print_picture()
                 print(self._play_commands())
                 key = input("Command: ")
+                print(
+                    "__________________________________________________________________________________________________________________________"
+                )
                 if key == "p":
                     if playing:
                         self._player.pause_music()
@@ -57,6 +71,10 @@ class UserInterface:
                     break
         else:
             print("FileNotFound: Please generate a music file.")
+
+        print(
+            "__________________________________________________________________________________________________________________________"
+        )
 
     def _start_commands(self) -> str:
         return """
@@ -76,10 +94,11 @@ ________________________________________________________________________________
 
     def _print_picture(self) -> print:
         return print(
-            self._sexy_woman(),
+            self._beauty(),
         )
 
     def _initiate_markov(self):
+
         try:
             depth = (
                 input(
@@ -88,16 +107,24 @@ ________________________________________________________________________________
                 or 2
             )
             depth = int(depth)
+            if depth <= 0:
+                raise ValueError()
         except ValueError:
-            print("Value must be integer. Please try again.")
+            print("Value must be integer larger than 0. Please try again.")
+            return
 
         try:
             self._player.initiate_markov(depth)
+            self._trie_initiated = True
         except FileNotFoundError:
             print("FileNotFoundError: Data files not found.")
             print("Please insert Data Files to the Data folder, and try again.")
 
     def _generate_music(self):
+        if not self._trie_initiated:
+            print("GenerationError: Please iniatiate music player with data files.")
+            return
+
         try:
             filename = str(input("Insert a name for the music file: "))
             prefix_notes = (
@@ -112,18 +139,17 @@ ________________________________________________________________________________
                 or 2
             )
             depth = int(depth)
+            if depth <= 0:
+                raise ValueError("Depth must be integer larger than 0")
             self._filename = filename
-
         except ValueError as exc:
             print(f"{exc}")
+            return
 
         if self._prefix_validation(prefix_notes):
-            try:
-                self._player.generate_music(
-                    filename=filename, prefix_notes=prefix_notes, depth=depth
-                )
-            except RecursionError:
-                print("GenerationError: Please iniatiate music player with data files.")
+            self._player.generate_music(
+                filename=filename, prefix_notes=prefix_notes, depth=depth
+            )
         else:
             print(
                 "Prefix notes must be a sequence of integers between 1 and 127, separated by semicolons."
@@ -136,7 +162,7 @@ ________________________________________________________________________________
             return re.match(regex, prefix_notes) is not None
         return True
 
-    def _sexy_woman(self):
+    def _beauty(self):
         return """ 
     
                         ⢀⣤⣴⣶⣦⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -149,8 +175,8 @@ ________________________________________________________________________________
         ⠀⠀⠀⠀⠀⠀⠀⠘⣿⣿⡟⠀⠀⠀⠀⠀⠛⢿⣿⣿⣿⣿⣿⠂⠀⠀⠀⢀⡞⠁⠀⠀⠙⣆⠀⣀⡴⠾⠛⠛⢶⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
         ⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⡇⠀⠀⠀⠀⢀⠀⠀⠉⠛⠿⢿⣿⣧⡀⠀⠀⡾⠀⠀⠀⠀⠀⣸⡾⠋⠀⠀⠀⠀⠀⢻⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
         ⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⡇⠀⠀⠀⠀⡇⠀⠀⠀⠀⠀⠰⣽⣿⣿⠀⣸⠇⠀⠀⠀⢀⣴⠋⠀⠀⠀⠀⠀⠀⠀⠈⢿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-        ⠀⠀⠀⠀⠀⠀⠚⠉⣿⣿⣇⠀⠀⠀⢸uwu⠀⠀⠀⢠⣿⡟⠁⢠⡟⠀⠀⠀⢠⡾⠁⠀⠀⠀⠀⣼⠀⠀⠀⠀⠈⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-        ⠀⠀⠀⠀⠀⠀⠀⠀⠻⠟⢿⠀⠀⠀⣼esa⠀⠐⠒⣿⡏⠀⠀⣼⠃⠀⠀⣰⡟⠀⠀⠀⠀⠀⣸⣿⡄⠀⠀⠀⠀⢹⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+        ⠀⠀⠀⠀⠀⠀⠚⠉⣿⣿⣇⠀⠀⠀⢸   ⠀⠀⠀⢠⣿⡟⠁⢠⡟⠀⠀⠀⢠⡾⠁⠀⠀⠀⠀⣼⠀⠀⠀⠀⠈⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+        ⠀⠀⠀⠀⠀⠀⠀⠀⠻⠟⢿⠀⠀⠀⣼   ⠀⠐⠒⣿⡏⠀⠀⣼⠃⠀⠀⣰⡟⠀⠀⠀⠀⠀⣸⣿⡄⠀⠀⠀⠀⢹⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
         ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⡏⠀⠀⠀⠀⠀⠀⣽⣧⠀⠀⣿⠀⠀⣼⠏⠀⠀⠀⠀⠀⢠⣿⢿⡿⡄⠀⠀⠀⠈⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
         ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠀⢀⣴⣷⠀⠀⠀⠀⠀⠀⢿⣿⡄⢸⡇⠀⣼⠃⠀⠀⠀⠀⠀⠀⣾⡏⠀⢻⡹⣦⠀⠀⠀⢸⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
         ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡼⠀⢸⡟⣿⡄⠀⠀⠀⠀⠀⠘⣿⣷⣾⣧⡞⠁⠀⠀⠀⠀⠀⠀⣸⠛⢧⠀⠀⢷⡘⢷⡄⠀⠀⢷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀
