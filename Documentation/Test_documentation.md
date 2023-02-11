@@ -4,6 +4,15 @@
 
 [Coverage report for tests](https://astranero.github.io/)
 
+### MarkovChain
+MarkovChain class has been tested with great coverage. I still need to test with bigger data set that generated music is unique and not just a copy of inserted data.
+
+### UI and MarkovPlayer
+I haven't tested this two classes, because there isn't really much to test. These have been manually tested by inserting different kind a values to cause it to crash. Program hasn't crashed with any edge case inputs. It handles exceptions by printing instructions.
+
+### Trie
+Trie has OK coverage, and I don't feel like it needs any more tests.
+
 ### Unit tests for the Trie Data Structure should verify the following:
 - Insertion of nodes into the trie in the correct order.
 - Proper frequency tracking of children nodes.
