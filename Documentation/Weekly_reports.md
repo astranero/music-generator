@@ -81,3 +81,25 @@ So I had to do it from midi handler
 ### Next Week
 
 - Now that my music sounds good I should do more test to be sure that data isn't being used too much. But before that I will create UI and also test MarkovPlayer class.
+
+## Week 4 Report (Hours 12)
+
+- [x] Create UI and refactor it
+- [x] Write test documentation and implementation documentation
+- [x] Fix errors
+
+### Problems
+
+- Didn't have any problems this week, because everything was basically same as previous week. Just went through different ways of doing the same.
+
+### What I have Learned
+
+- I have learned a way to test the Markov Chain better, but haven't implemented it
+
+### Questions
+
+- None
+
+### Next Week
+
+- I will improve Markov chain tests and also finnish documentation.
