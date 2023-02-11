@@ -1,4 +1,4 @@
-# Design Documentation
+# Implementation Documentation
 
 ## Input / Output
 
