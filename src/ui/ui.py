@@ -26,10 +26,6 @@ class UserInterface:
         tprint("Music Generator")
         self._print_picture()
         while True:
-            print(
-                "__________________________________________________________________________________________________________________________"
-            )
-
             print(self._start_commands())
             key = str(input("Command: "))
             print(
@@ -41,6 +37,7 @@ class UserInterface:
                 func = self._start_controller[key]
                 func()
             except KeyError:
+                print()
                 print("Incorrect command!")
         print(
             "__________________________________________________________________________________________________________________________"
@@ -70,11 +67,8 @@ class UserInterface:
                     self._player.stop_music()
                     break
         else:
+            print()
             print("FileNotFound: Please generate a music file.")
-
-        print(
-            "__________________________________________________________________________________________________________________________"
-        )
 
     def _start_commands(self) -> str:
         return """
@@ -100,6 +94,7 @@ ________________________________________________________________________________
     def _initiate_markov(self):
 
         try:
+            print()
             depth = (
                 input(
                     "Please select a depth for the trie data structure (Optional, Defaults to 2): "
@@ -117,21 +112,25 @@ ________________________________________________________________________________
             self._player.initiate_markov(depth)
             self._trie_initiated = True
         except FileNotFoundError:
+            print()
             print("FileNotFoundError: Data files not found.")
             print("Please insert Data Files to the Data folder, and try again.")
 
     def _generate_music(self):
         if not self._trie_initiated:
+            print()
             print("GenerationError: Please iniatiate music player with data files.")
             return
 
         try:
+            print()
             filename = str(input("Insert a name for the music file: "))
+            print()
             prefix_notes = (
                 str(input("Insert prefix notes in format; '2;121;22;11' (Optional): "))
                 or None
             )
-
+            print()
             depth = (
                 input(
                     "Insert the depth of the data to be used for generation (Optional, Defaults to 2): "
@@ -143,6 +142,7 @@ ________________________________________________________________________________
                 raise ValueError("Depth must be integer larger than 0")
             self._filename = filename
         except ValueError as exc:
+            print()
             print(f"{exc}")
             return
 
@@ -151,6 +151,7 @@ ________________________________________________________________________________
                 filename=filename, prefix_notes=prefix_notes, depth=depth
             )
         else:
+            print()
             print(
                 "Prefix notes must be a sequence of integers between 1 and 127, separated by semicolons."
             )
