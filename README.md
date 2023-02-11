@@ -13,4 +13,4 @@
 
 [Implementation Document](https://github.com/astranero/music-generator/blob/main/Documentation/Implementation-document.md)
 
-[Testing Document](https://github.com/astranero/music-generator/blob/main/Documentation/Test-document.md)
+[Testing Document](https://github.com/astranero/music-generator/blob/main/Documentation/Testing-document.md)
