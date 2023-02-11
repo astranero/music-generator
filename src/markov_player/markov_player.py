@@ -13,14 +13,13 @@ sys.path.append(os.fsdecode(os.getcwd() + "/src/"))
 from markov_chain.markov import MarkovChain
 
 
-
 class MarkovPlayer:
     """
     A class that generates and controls music using A Markov Chain.
     """
 
     def __init__(self, markov: MarkovChain = MarkovChain()):
-        self._data_directory = os.fsdecode(os.getcwd() + "/../" + env_values["DATA_PATH"])
+        self._data_directory = os.fsdecode(os.getcwd() + env_values["DATA_PATH"])
         self._file_synth = FluidSynth(
             sound_font=(os.fsdecode(os.getcwd() + env_values["SOUNDFONT"]))
         )
@@ -33,7 +32,7 @@ class MarkovPlayer:
 
     def _initiate_mixer(self):
         mixer.init()
-        mixer.music.set_volume(0.5)
+        mixer.music.set_volume(1)
         self._music = mixer.music
 
     def _get_filenames(self) -> List[str]:
@@ -144,7 +143,7 @@ class MarkovPlayer:
         midifile.tracks.append(track)
         time_tick = 0
         velocity = 0
-        channel = 10
+        channel = 1
 
         for i, note in enumerate(notes):
             if i <= 50:
@@ -261,10 +260,12 @@ class MarkovPlayer:
         """
         return [int(i) for i in prefix_notes.split(";")]
 
-    def play_music(self, filename: str):
+    def load_music(self, filename: str):
         mixer.music.load(self._file_path + filename + ".wav")
-        self._music.play()
         return self._music
+
+    def play_music(self):
+        self._music.play()
 
     def pause_music(self):
         self._music.pause()
@@ -283,10 +284,3 @@ class MarkovPlayer:
         self._file_synth.midi_to_audio(
             self._file_path + self._filename_mid, self._filename_wav
         )
-
-
-if __name__ == "__main__":
-    player = MarkovPlayer()
-    player.initiate_markov()
-    player.generate_music("Rockin")
-    player.play_music("Rockin")

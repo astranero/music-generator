@@ -16,6 +16,8 @@ pytest = "^7.2.1"
 invoke = "^2.0.0"
 python-dotenv = "^0.21.1"
 pytest-cov = "^4.0.0"
+art = "^5.8"
+lint = "^1.2.1"
 
 
 [build-system]
