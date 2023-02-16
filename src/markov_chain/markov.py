@@ -14,7 +14,8 @@ class MarkovChain:
     def get_trie(self):
         """A Method that returns a Trie object.
         Returns:
-            Trie: A Trie object
+            - Trie:
+                A Trie object
         """
         return self._trie
 
@@ -28,13 +29,17 @@ class MarkovChain:
         Generate a melody sequence based on note frequencies in the data
 
         Args:
-        prefix_notes (List[int]): prefix notes to use as the
-        starting point for generating the melody
-        depth (int): depth of trie.
-        melody_length (int): The minimum size of the returned melody str
+            - prefix_notes (List[int]):
+                prefix notes to use as the
+                starting point for generating the melody
+            - depth (int):
+                The depth of trie.
+            - melody_length (int):
+                The minimum size of the returned melody str
 
         Returns:
-        List[int]: A sequence of generate notes
+            - List[int]:
+                A sequence of generate notes
         """
 
         node = self._trie.get_root()
@@ -44,21 +49,18 @@ class MarkovChain:
         self._prefix_lenght = len(prefix_notes)
         self._melody = prefix_notes
 
-        for note in prefix_notes:
-            if not node.terminal and note in node.children:
-                node = node.children[note]
+        node = self._trie.search(prefix_notes, node)
 
         while len(self._melody) <= melody_length - self._prefix_lenght:
             current_node = node
             current = self._melody[-depth:]
-            for note in current:
-                if note in current_node.children and not current_node.terminal:
-                    current_node = current_node.children[note]
-
+            current_node = self._trie.search(current, current_node)
             new_note = self._trie.get_random_note(current_node)
-            self._melody.append(new_note)
-            try:
+
+            if new_note:
+                self._melody.append(new_note)
                 node = current_node.children[new_note]
-            except KeyError:
+            else:
                 node = self._trie.get_root()
+
         return self._melody

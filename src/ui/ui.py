@@ -1,6 +1,4 @@
 import re
-import random
-import time
 from art import tprint
 from markov_player.markov_player import MarkovPlayer
 
@@ -21,7 +19,7 @@ class UserInterface:
 
     def _start_menu(self):
         print(
-            "__________________________________________________________________________________________________________________________"
+            """______________________________________________________________________________________"""
         )
         tprint("Music Generator")
         self._print_picture()
@@ -29,46 +27,64 @@ class UserInterface:
             print(self._start_commands())
             key = str(input("Command: "))
             print(
-                "__________________________________________________________________________________________________________________________"
+                """______________________________________________________________________________________"""
             )
             if key == "e":
                 break
             try:
                 func = self._start_controller[key]
                 func()
-            except KeyError:
+            except KeyError as exc:
                 print()
-                print("Incorrect command!")
+                print(f"Incorrect command: {exc}")
         print(
-            "__________________________________________________________________________________________________________________________"
+            "______________________________________________________________________________________"
         )
+
+    def _load_player(self):
+        try:
+            self._player.load_music(self._filename)
+        except Exception as exc:
+            print(f"File {self._filename} not found: {exc}")
+            self._filename = None
+            return
 
     def _play_menu(self):
         playing = True
         tprint("Music Generator")
         self._print_picture()
         if self._filename or self._filename == "":
-            self._player.load_music(self._filename)
+            self._load_player()
             self._player.play_music()
             while True:
                 print(self._play_commands())
                 key = input("Command: ")
                 print(
-                    "__________________________________________________________________________________________________________________________"
+                    """______________________________________________________________________________________"""
                 )
-                if key == "p":
-                    if playing:
-                        self._player.pause_music()
-                        playing = False
-                    else:
-                        self._player.resume_music()
-                        playing = True
+                if key == "p" and playing:
+                    self._player.pause_music()
+                    playing = False
+                elif key == "p" and not playing:
+                    self._player.resume_music()
+                    playing = True
+                elif key == "c":
+                    self._insert_filename()
+                    self._play_menu()
+                    break
                 elif key == "x":
                     self._player.stop_music()
+                    self._filename = None
                     break
         else:
             print()
-            print("FileNotFound: Please generate a music file.")
+            print("FileNotFound: Please insert a music filename.")
+            self._insert_filename()
+            self._play_menu()
+
+    def _insert_filename(self) -> str:
+        print()
+        self._filename = input("Filename (wav) : ")
 
     def _start_commands(self) -> str:
         return """
@@ -76,14 +92,15 @@ class UserInterface:
 > g to generate a new music file.
 > s to start the music!
 > e to exit.
-__________________________________________________________________________________________________________________________
+______________________________________________________________________________________
 """
 
     def _play_commands(self) -> str:
         return """
 > p to pause/unpause. 
+> c to change music file.
 > x to exit back to main menu.
-__________________________________________________________________________________________________________________________
+______________________________________________________________________________________
 """
 
     def _print_picture(self) -> print:
@@ -91,21 +108,25 @@ ________________________________________________________________________________
             self._beauty(),
         )
 
-    def _initiate_markov(self):
-
-        try:
-            print()
-            depth = (
-                input(
-                    "Please select a depth for the trie data structure (Optional, Defaults to 2): "
-                )
-                or 2
+    def _depth_handler(self):
+        print()
+        depth = (
+            input(
+                "Please select a depth for the trie data structure (Optional, Defaults to 2): "
             )
-            depth = int(depth)
-            if depth <= 0:
-                raise ValueError()
-        except ValueError:
-            print("Value must be integer larger than 0. Please try again.")
+            or 2
+        )
+        depth = int(depth)
+        if depth <= 0:
+            raise ValueError("Value must be integer larger than 0. Please try again.")
+        return depth
+
+    def _initiate_markov(self):
+        try:
+            depth = self._depth_handler()
+        except ValueError as exc:
+            print()
+            print(f"{exc}")
             return
 
         try:
@@ -130,16 +151,7 @@ ________________________________________________________________________________
                 str(input("Insert prefix notes in format; '2;121;22;11' (Optional): "))
                 or None
             )
-            print()
-            depth = (
-                input(
-                    "Insert the depth of the data to be used for generation (Optional, Defaults to 2): "
-                )
-                or 2
-            )
-            depth = int(depth)
-            if depth <= 0:
-                raise ValueError("Depth must be integer larger than 0")
+            depth = self._depth_handler()
             self._filename = filename
         except ValueError as exc:
             print()
@@ -153,26 +165,27 @@ ________________________________________________________________________________
         else:
             print()
             print(
-                "Prefix notes must be a sequence of integers between 1 and 127, separated by semicolons."
+                """Prefix notes must be a sequence of integers 
+                between 1 and 127, separated by semicolons."""
             )
             print("Example: '1;123;104;67;22'")
 
     def _prefix_validation(self, prefix_notes: str) -> bool:
         if prefix_notes:
-            regex = r"^(?:(?:[1-9]|[1-9][0-9]|1[0-1][0-9]|12[0-7]);)*(?:[1-9]|[1-9][0-9]|1[0-1][0-9]|12[0-7])$"
+            regex = r"""^(?:(?:[1-9]|[1-9][0-9]|1[0-1][0-9]|
+            12[0-7]);)*(?:[1-9]|[1-9][0-9]|1[0-1][0-9]|12[0-7])$"""
             return re.match(regex, prefix_notes) is not None
         return True
 
     def _beauty(self):
-        return """ 
-    
+        return """
                         ⢀⣤⣴⣶⣦⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
         ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣾⣿⣿⣿⣿⣿⣿⣿⣦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
         ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣾⣿⣿⣿⣿⣿⡿⠛⢻⣿⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
         ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⣿⣿⣿⣿⣿⣿⠇⢀⣸⣿⣿⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
         ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⣿⣿⣿⡟⠉⠀⠀⠀⢻⣿⣿⣿⣿⣶⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣿⣿⣿⠿⠣⡀⠀⠒⣶⣿⣿⣿⡏⢿⡿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-        ⠀⠀⠀⠀⠀⠀⠀⢀⣾⣿⣿⠏⠀⠀⠀⢸⣶⣶⣿⣿⣿⣿⣧⠀⠀⠀⠀⠀⠀⣀⣤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣿⣿⣿⠿⠣⡀⠀⠒⣶⣿⣿⣿⡏⢿⡿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+        ⠀⠀⠀⠀⠀⠀⠀⢀⣾⣿⣿⠏⠀⠀⠀⢸⣶⣶⣿⣿⣿⣿⣧⠀⠀⠀⠀⠀⠀⣀⣤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
         ⠀⠀⠀⠀⠀⠀⠀⠘⣿⣿⡟⠀⠀⠀⠀⠀⠛⢿⣿⣿⣿⣿⣿⠂⠀⠀⠀⢀⡞⠁⠀⠀⠙⣆⠀⣀⡴⠾⠛⠛⢶⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
         ⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⡇⠀⠀⠀⠀⢀⠀⠀⠉⠛⠿⢿⣿⣧⡀⠀⠀⡾⠀⠀⠀⠀⠀⣸⡾⠋⠀⠀⠀⠀⠀⢻⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
         ⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⡇⠀⠀⠀⠀⡇⠀⠀⠀⠀⠀⠰⣽⣿⣿⠀⣸⠇⠀⠀⠀⢀⣴⠋⠀⠀⠀⠀⠀⠀⠀⠈⢿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -188,5 +201,5 @@ ________________________________________________________________________________
         ⠀⠀⠀⠀⠀⠀⠀⠀⢸⠁⣼⠁⠀⠛⠛⠿⠿⠿⠿⠃⠻⣿⣶⣄⡀⠀⠀⢀⣠⣶⡿⠃⠀⠀⠀⠀⠀⠀⠀⢿⡄⠀⠙⢿⣿⡟⠻⣷⣦⡀⠀⣿⣦⣄⡀⠀
         ⢀⣠⡤⠴⠒⠒⠒⠒⢋⣰⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠛⠿⠿⣿⣿⡿⠿⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠃⠀⠀⠀⢻⣿⡀⠀⠙⢿⣦⣽⣿⣿⡿⠆
         ⠀⠀⠉⠉⠉⠒⠚⠛⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠁⠀⠀⠀⠉⠉⠉⠁⠀⠀
-__________________________________________________________________________________________________________________________
+______________________________________________________________________________________
 """

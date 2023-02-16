@@ -8,7 +8,7 @@ def test(ctx):
 
 @task
 def start(ctx):
-    ctx.run("p", pty=True)
+    ctx.run("poetry run python src/main.py", pty=True)
     
 @task
 def coverage_report(ctx):

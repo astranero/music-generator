@@ -39,7 +39,8 @@ class MarkovPlayer:
         """A method to fetch midi filenames.
 
         Returns:
-            List[str]: A list of filenames.
+            - List[str]: 
+                A list of filenames.
         """
 
         filenames = [
@@ -53,10 +54,12 @@ class MarkovPlayer:
         """A method to generate MidiFile objects from midi files.
 
         Args:
-            filenames (List[str]): A list of midi filenames.
+            - filenames (List[str]):
+                A list of midi filenames.
 
         Returns:
-            List[MidiFile]: A list of MidiFile objects.
+            - List[MidiFile]:
+                A list of MidiFile objects.
         """
         midifiles = []
         for filename in filenames:
@@ -70,10 +73,12 @@ class MarkovPlayer:
         """A method to parse MidiTrack objects from a list of MidiFiles.
 
         Args:
-            mid_files (List[MidiFile]): A list of MidiFile objects.
+            - mid_files (List[MidiFile]):
+                A list of MidiFile objects.
 
         Returns:
-            List[MidiTrack]: A list of MidiTrack objects.
+            - List[MidiTrack]:
+                A list of MidiTrack objects.
         """
         mid_tracks = [track for mid in midifiles for track in mid.tracks]
         return mid_tracks
@@ -99,7 +104,8 @@ class MarkovPlayer:
         into Markov Chains Trie data structure.
 
         Args:
-            tracks (List[MidiTrack]): A list of MidiTrack objects.
+            - tracks (List[MidiTrack]):
+                A list of MidiTrack objects.
         """
 
         for sequence in self._notes_depth_size_sublist(tracks, depth=depth):
@@ -114,7 +120,8 @@ class MarkovPlayer:
         """A method that generates a list of notes.
 
         Returns:
-            List[str]: A list of string type notes.
+            - List[str]:
+                A list of string type notes.
         """
         print("Generating melody...")
         notes = self._markov.generate_melody(
@@ -132,7 +139,8 @@ class MarkovPlayer:
         """A method that creates a midifile using a Markov Chain.
 
         Returns:
-            MidiFile: A MidiFile object.
+            - MidiFile: 
+                A MidiFile object.
         """
         notes = self._generate_notes(
             prefix_notes=prefix_notes, depth=depth, melody_length=melody_length
@@ -146,7 +154,7 @@ class MarkovPlayer:
         channel = 1
 
         for i, note in enumerate(notes):
-            if i <= 50:
+            if i <= 30:
                 time_tick += 2
                 velocity += 1
                 track.append(
@@ -158,7 +166,7 @@ class MarkovPlayer:
                     )
                 )
 
-            if 50 < i < len(notes) - 50:
+            if 30 < i < len(notes) - 30:
                 time_tick += 2
                 track.append(
                     self._note(
@@ -227,10 +235,17 @@ class MarkovPlayer:
         """A method that generates music.
 
         Args:
-            filename (str): A name for the generated music file.
-            prefix_notes (str, optional): A sequence of notes that the generation of music is based on. Defaults to None.
-            depth (int, optional): The depth of the data to be used. Defaults to 2.
-            melody_length (int, optional): The lenght of the music file. Defaults to 500.
+            - filename (str):
+                A name for the generated music file.
+            - prefix_notes (str, optional):
+                A sequence of notes that the generation of music is based on.
+                Defaults to None.
+            - depth (int, optional):
+                The depth of the data to be used.
+                Defaults to 2.
+            - melody_length (int, optional):
+                The lenght of the music file.
+                Defaults to 500.
         """
         if prefix_notes:
             prefix_notes = self._listify_prefix_notes(prefix_notes)
@@ -253,10 +268,12 @@ class MarkovPlayer:
         """A method that turns string prefix notes into list.
 
         Args:
-            prefix_notes (str): A string of prefix notes
+            - prefix_notes (str):
+                A string of prefix notes
 
         Returns:
-            List[int]: A list of integer notes
+            - List[int]:
+                A list of integer notes
         """
         return [int(i) for i in prefix_notes.split(";")]
 
