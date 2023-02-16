@@ -1,4 +1,4 @@
-# Specification document
+# Specification documentation
 
 I have knowledge of the mighty Python Programming language
 
