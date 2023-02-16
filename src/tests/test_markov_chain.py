@@ -11,7 +11,7 @@ class TestMarkov:
     def test_generate_melody(self):
         markov = MarkovChain(trie=pytest.trie)
         markov.insert(["A", "B", "C"])
-        melody = markov.generate_melody(prefix_notes=["A"], depth=0, melody_length=3)
+        melody = markov.generate_melody(prefix_notes=["A"], depth=1, melody_length=3)
         melody = "".join(melody)
         assert melody == "ABC"
 

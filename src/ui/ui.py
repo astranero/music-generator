@@ -44,17 +44,17 @@ class UserInterface:
     def _load_player(self):
         try:
             self._player.load_music(self._filename)
+            return True
         except Exception as exc:
             print(f"File {self._filename} not found: {exc}")
             self._filename = None
-            return
+            return False
 
     def _play_menu(self):
         playing = True
         tprint("Music Generator")
         self._print_picture()
-        if self._filename or self._filename == "":
-            self._load_player()
+        if (self._filename or self._filename == "") and self._load_player():
             self._player.play_music()
             while True:
                 print(self._play_commands())
@@ -80,7 +80,7 @@ class UserInterface:
             print()
             print("FileNotFound: Please insert a music filename.")
             self._insert_filename()
-            self._play_menu()
+            return
 
     def _insert_filename(self) -> str:
         print()
@@ -88,6 +88,8 @@ class UserInterface:
 
     def _start_commands(self) -> str:
         return """
+______________________________________________________________________________________
+
 > i to initiate music player with data files.
 > g to generate a new music file.
 > s to start the music!
@@ -97,6 +99,8 @@ ________________________________________________________________________________
 
     def _play_commands(self) -> str:
         return """
+______________________________________________________________________________________
+
 > p to pause/unpause. 
 > c to change music file.
 > x to exit back to main menu.
@@ -165,8 +169,7 @@ ________________________________________________________________________________
         else:
             print()
             print(
-                """Prefix notes must be a sequence of integers 
-                between 1 and 127, separated by semicolons."""
+                "Prefix notes must be a sequence of integers between 1 and 127, separated by semicolons."
             )
             print("Example: '1;123;104;67;22'")
 
@@ -201,5 +204,4 @@ ________________________________________________________________________________
         ⠀⠀⠀⠀⠀⠀⠀⠀⢸⠁⣼⠁⠀⠛⠛⠿⠿⠿⠿⠃⠻⣿⣶⣄⡀⠀⠀⢀⣠⣶⡿⠃⠀⠀⠀⠀⠀⠀⠀⢿⡄⠀⠙⢿⣿⡟⠻⣷⣦⡀⠀⣿⣦⣄⡀⠀
         ⢀⣠⡤⠴⠒⠒⠒⠒⢋⣰⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠛⠿⠿⣿⣿⡿⠿⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠃⠀⠀⠀⢻⣿⡀⠀⠙⢿⣦⣽⣿⣿⡿⠆
         ⠀⠀⠉⠉⠉⠒⠚⠛⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠁⠀⠀⠀⠉⠉⠉⠁⠀⠀
-______________________________________________________________________________________
 """
