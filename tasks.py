@@ -15,8 +15,8 @@ def start(ctx):
 @task
 def coverage_report(ctx):
     ctx.run("coverage html", pty=True)
-    ctx.run("chmod u+x trigger_push_html_cov.sh", pty=True)
-    ctx.run("bash trigger_push_html_cov.sh", pty=True)
+    ctx.run("chmod u+x trigger_push_htmlcov.sh", pty=True)
+    ctx.run("bash trigger_push_htmlcov.sh", pty=True)
 
 
 @task
