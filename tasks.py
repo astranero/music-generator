@@ -4,7 +4,7 @@ from invoke import task
 
 @task
 def test(ctx):
-    ctx.run("pytest src", pty=True)
+    ctx.run("poetry run pytest src", pty=True)
 
 
 @task
@@ -14,10 +14,11 @@ def start(ctx):
 
 @task
 def coverage_report(ctx):
-    ctx.run("coverage html", pty=True)
+    ctx.run("poetry run pytest --cov-report html --cov=src", pty=True)
     ctx.run("chmod u+x trigger_push_htmlcov.sh", pty=True)
     ctx.run("bash trigger_push_htmlcov.sh", pty=True)
     ctx.run("rm -r htmlcov")
+    ctx.run("rm .coverage")
 
 
 @task
