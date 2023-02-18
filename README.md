@@ -1,5 +1,3 @@
-
-theme: minima
 # Music Gen 1.0
 
 ![Music notes](https://github.com/astranero/music-generator/blob/main/Documentation/png_image2.png)
