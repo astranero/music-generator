@@ -5,7 +5,7 @@ git checkout main -- html-coverage/
 
 for file in $pwd/htmlcov/
 do 
-    echo ${file}
+    echo $file
 done
 
 git add .
