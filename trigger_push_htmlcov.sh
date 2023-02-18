@@ -1,7 +1,7 @@
 #!/bin/bash
 
 git checkout html-coverage
-git checkout main -- htmlcov/
+git checkout main -- /htmlcov
 
 for file in $pwd/htmlcov/
 do 
