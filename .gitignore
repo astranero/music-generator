@@ -15,3 +15,5 @@ generated.wav
 *.MID
 *.wav
 *.sf2
+.trigger_push_htmlcov.sh
+src
