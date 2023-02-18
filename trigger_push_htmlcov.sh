@@ -4,7 +4,8 @@
 git checkout html-coverage
 git checkout main -- Documentation/
 
-for file in $pwd/Documentation/
+echo $pwd
+for file in $pwd
 do 
     cp $file ./
     echo $file
