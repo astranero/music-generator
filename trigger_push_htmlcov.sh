@@ -5,7 +5,7 @@ git checkout main -- htmlcov
 FILES="$PWD/htmlcov/*"
 for file in $FILES
 do 
-    echo "$file"
+    cp -f "$file" "$PWD"
 done
 
 git add .
