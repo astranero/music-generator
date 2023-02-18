@@ -57,3 +57,6 @@ class TestMarkov:
         markov.insert(["A"])
         melody = markov.generate_melody(prefix_notes=["A"], depth=1, melody_length=1)
         assert "A" in melody
+    
+    def test_testing_trigger(self):
+        assert True == True
