@@ -1,13 +1,15 @@
 #!/bin/bash
 
 git switch html-coverage
-git show main:htmlcov > .
-git show main:.coverage > .
+git show main:htmlcov > htmlcov
+git show main:.coverage > .coverage
 
 for file in htmlcov
 do 
     cp file .
 done
+
+rm -r htmlcov
 
 
 git add .
