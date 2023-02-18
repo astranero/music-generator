@@ -4,7 +4,8 @@ git checkout main -- Documentation/
 
 for file in $pwd/htmlcov/
 do 
-    echo file
+    echo ${file}
+done
 
 git add .
 git commit -m "adding 'htmlcov' directory from 'main' branch to the GitHubs Actions." 
