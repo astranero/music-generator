@@ -1,2 +1,5 @@
-/src/ui
-/src/markov_player
+[run]
+branch = True
+
+source=src
+omit=*src/tests*
