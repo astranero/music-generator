@@ -1,14 +1,15 @@
 #!/bin/bash
 
-git switch html-coverage
-git show main:htmlcov > htmlcov
-git show main:.coverage > .coverage
+git checkout html-coverage
+git checkout main -- htmlcov
 
 for file in htmlcov
 do 
     cp file ./
     echo pwd
 done
+
+
 
 rm -r htmlcov
 
