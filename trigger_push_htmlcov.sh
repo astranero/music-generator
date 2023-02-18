@@ -3,9 +3,9 @@
 git checkout html-coverage
 git checkout main -- htmlcov
 
-for file in pwd/htmlcov
+for file in $pwd/htmlcov
 do 
-    cp file ./
+    cp $file ./
     echo pwd
 done
 
