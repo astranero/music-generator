@@ -25,7 +25,7 @@ def push(ctx, msg):
     ctx.run("git add .", pty=True)
     ctx.run(f"git commit -m {msg}")
     ctx.run("git push origin main", pty=True)
-    coverage_report()
+    coverage_report(ctx)
 
 
 @task
