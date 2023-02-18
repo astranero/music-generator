@@ -8,14 +8,25 @@ class UserInterface:
         self._player = player
         self._filename = None
         self._trie_initiated = False
+        self._melody_length = 250
 
         self._start_controller = {
             "i": self._initiate_markov,
             "s": self._play_menu,
             "g": self._generate_music,
+            "l": self._set_melody_length,
         }
         self._start_menu()
         self._trie_initiated = False
+
+    def _set_melody_length(self):
+        try:
+            self._melody_length = int(
+                input("Please insert the music file length (Recommended 250-500): ")
+            )
+            print("Music file length has been set successfully.")
+        except ValueError as exc:
+            print(f"Setting music file length has failed: {exc}")
 
     def _start_menu(self):
         print(
@@ -35,11 +46,7 @@ class UserInterface:
                 func = self._start_controller[key]
                 func()
             except KeyError as exc:
-                print()
                 print(f"Incorrect command: {exc}")
-        print(
-            "______________________________________________________________________________________"
-        )
 
     def _load_player(self):
         try:
@@ -59,9 +66,6 @@ class UserInterface:
             while True:
                 print(self._play_commands())
                 key = input("Command: ")
-                print(
-                    """______________________________________________________________________________________"""
-                )
                 if key == "p" and playing:
                     self._player.pause_music()
                     playing = False
@@ -80,6 +84,7 @@ class UserInterface:
             print()
             print("FileNotFound: Please insert a music filename.")
             self._insert_filename()
+            self._play_menu()
             return
 
     def _insert_filename(self) -> str:
@@ -91,6 +96,7 @@ class UserInterface:
 ______________________________________________________________________________________
 
 > i to initiate music player with data files.
+> l to set the lenght of the music file.
 > g to generate a new music file.
 > s to start the music!
 > e to exit.
@@ -102,8 +108,8 @@ ________________________________________________________________________________
 ______________________________________________________________________________________
 
 > p to pause/unpause. 
-> c to change music file.
-> x to exit back to main menu.
+> c to change the music file.
+> x to exit back to the main menu.
 ______________________________________________________________________________________
 """
 
@@ -113,7 +119,6 @@ ________________________________________________________________________________
         )
 
     def _depth_handler(self):
-        print()
         depth = (
             input(
                 "Please select a depth for the trie data structure (Optional, Defaults to 2): "
@@ -127,6 +132,7 @@ ________________________________________________________________________________
 
     def _initiate_markov(self):
         try:
+            print()
             depth = self._depth_handler()
         except ValueError as exc:
             print()
@@ -142,15 +148,13 @@ ________________________________________________________________________________
             print("Please insert Data Files to the Data folder, and try again.")
 
     def _generate_music(self):
+        print()
         if not self._trie_initiated:
-            print()
             print("GenerationError: Please iniatiate music player with data files.")
             return
 
         try:
-            print()
             filename = str(input("Insert a name for the music file: "))
-            print()
             prefix_notes = (
                 str(input("Insert prefix notes in format; '2;121;22;11' (Optional): "))
                 or None
@@ -158,16 +162,17 @@ ________________________________________________________________________________
             depth = self._depth_handler()
             self._filename = filename
         except ValueError as exc:
-            print()
             print(f"{exc}")
             return
 
         if self._prefix_validation(prefix_notes):
             self._player.generate_music(
-                filename=filename, prefix_notes=prefix_notes, depth=depth
+                filename=filename,
+                prefix_notes=prefix_notes,
+                depth=depth,
+                melody_length=self._melody_length,
             )
         else:
-            print()
             print(
                 "Prefix notes must be a sequence of integers between 1 and 127, separated by semicolons."
             )

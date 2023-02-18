@@ -155,7 +155,7 @@ class MarkovPlayer:
 
         for i, note in enumerate(notes):
             if i <= 30:
-                time_tick += 2
+                time_tick += 3
                 velocity += 1
                 track.append(
                     self._note(
@@ -167,7 +167,7 @@ class MarkovPlayer:
                 )
 
             if 30 < i < len(notes) - 30:
-                time_tick += 2
+                time_tick += 3
                 track.append(
                     self._note(
                         note=note,
@@ -179,7 +179,7 @@ class MarkovPlayer:
                 velocity += random.randint(3, 5)
 
             else:
-                time_tick += 2
+                time_tick += 3
                 track.append(
                     self._note(
                         note=note,
