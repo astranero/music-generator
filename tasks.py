@@ -16,7 +16,11 @@ def start(ctx):
 def coverage_report(ctx):
     ctx.run("poetry run pytest --cov-report html --cov=src", pty=True)
     ctx.run("chmod u+x trigger_push_htmlcov.sh", pty=True)
+    
     ctx.run("bash trigger_push_htmlcov.sh", pty=True)
+    sleep(10)
+    ctx.run("rm -r htmlcov")
+    ctx.run("rm .coverage")
 
 
 @task
