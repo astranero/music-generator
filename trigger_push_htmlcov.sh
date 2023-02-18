@@ -2,8 +2,8 @@
 git checkout html-coverage
 git checkout main -- htmlcov
 
-FILES = "$PWD/htmlcov/*"
-for file in $FILES
+
+for file in "$PWD/htmlcov/*"
 do 
     cp -f "$file" "$PWD"
 done
