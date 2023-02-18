@@ -1,5 +1,5 @@
 #!/bin/bash
-FILES = "$pwd/htmlcov/*"
+FILES = $pwd"/htmlcov/*"
 git checkout html-coverage
 git checkout main -- htmlcov
 
