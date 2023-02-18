@@ -9,10 +9,6 @@ do
     echo pwd
 done
 
-
-
-rm -r htmlcov
-
 git add .
 git commit -m "adding 'htmlcov' directory from 'main' branch to the GitHubs Actions." 
 git push origin html-coverage
