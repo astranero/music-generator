@@ -1,9 +1,9 @@
 #!/bin/bash
 
 git checkout html-coverage
-git checkout main -- htmlcov
+git checkout main -- Documentation/
 
-for file in $pwd/htmlcov
+for file in $pwd/Documentation/
 do 
     cp $file ./
     echo pwd
@@ -11,7 +11,7 @@ done
 
 
 
-rm -r htmlcov
+rm -r Documentation/
 
 git add .
 git commit -m "adding 'htmlcov' directory from 'main' branch to the GitHubs Actions." 
