@@ -3,9 +3,9 @@ FILES = "${pwd}/htmlcov/*"
 git checkout html-coverage
 git checkout main -- htmlcov
 
-for file in FILES
+for file in $FILES
 do 
-    echo $file
+    echo "$file"
 done
 
 git add .
