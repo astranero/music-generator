@@ -1,8 +1,17 @@
 #!/bin/bash
 
-git switch html-coverage
-git show main:htmlcov > htmlcov
-git show main:.coverage > .coverage
+git checkout html-coverage
+git checkout main -- htmlcov/
+
+for file in $pwd/htmlcov/
+do 
+    cp $file ./
+    echo pwd
+done
+
+
+
+rm -r htmlcov
 
 git add .
 git commit -m "adding 'htmlcov' directory from 'main' branch to the GitHubs Actions." 
