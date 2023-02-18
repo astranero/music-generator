@@ -1,7 +1,7 @@
 #!/bin/bash
 git stash save
 git checkout html-coverage
-git checkout main -- html-coverage/
+git checkout main -- htmlcov/
 
 for file in $pwd/htmlcov/
 do 
