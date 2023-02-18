@@ -59,7 +59,6 @@ class UserInterface:
 
     def _play_menu(self):
         playing = True
-        tprint("Music Generator")
         self._print_picture()
         if (self._filename or self._filename == "") and self._load_player():
             self._player.play_music()
@@ -114,6 +113,7 @@ ________________________________________________________________________________
 """
 
     def _print_picture(self) -> print:
+        tprint("Music Generator")
         return print(
             self._beauty(),
         )
