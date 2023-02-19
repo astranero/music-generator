@@ -8,7 +8,6 @@ from trie_module.trie import Trie
 class MarkovChain:
     def __init__(self, trie: Trie = Trie()):
         self._trie = trie
-        self._melody = []
         self._prefix_length = None
 
     def get_trie(self):
@@ -64,22 +63,21 @@ class MarkovChain:
             - List[int]:
                 A sequence of generate notes
         """
-
+        melody = []
         if not prefix_notes:
             prefix_notes = []
 
         self._prefix_length = len(prefix_notes)
-        self._melody = prefix_notes
+        melody = prefix_notes
         current_node = self._trie.search(self._trie.get_root(), prefix_notes)
 
-        while len(self._melody) <= melody_length - self._prefix_length:
+        while len(melody) < melody_length:
             if current_node.terminal:
-                last_notes = self._melody[-depth:]
-                self._melody.append(current_node.note)
+                melody.append(current_node.note)
                 current_node = self._trie.get_root()
 
             new_note = self._trie.get_random_note(current_node)
-            self._melody.append(new_note)
-            last_notes = self._melody[-depth:]
+            melody.append(new_note)
+            last_notes = melody[-depth:]
             current_node = self._trie.search(current_node, last_notes)
-        return self._melody
+        return melody
