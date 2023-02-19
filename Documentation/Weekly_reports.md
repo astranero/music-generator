@@ -125,4 +125,4 @@ So I had to do it from midi handler
 
 ### Next Week
 
-- I still haven't finished documentation, so that seems to be only thing left to do. One more test may be with bigger data too to check that generated data is unique.
+- I still haven't finished documentation, so that seems to be only thing left to do. One more test may be with bigger data too to check that generated data is unique. Just realised that my refactoring caused error in Markov Chain, so have to fix that.
