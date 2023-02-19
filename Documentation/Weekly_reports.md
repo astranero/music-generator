@@ -103,3 +103,26 @@ So I had to do it from midi handler
 ### Next Week
 
 - I will improve Markov chain tests and also finnish documentation.
+
+## Week 5 Report (Hours 10)
+
+- [x] Refactor the code based on the reviews given.
+- [x] Create a bash script for synching two different git branches and pushing them.
+- [x] Write an issue
+- [x] Improvement of UI, adding functionality to change music file.
+
+### Problems
+
+- Didn't have any problems this week, because everything was basically same as previous week. Just went through different ways of doing the same.
+
+### What I have Learned
+
+- This week for my own amusement I learned how to syncronize two different GitHub branches with bash scripting.
+
+### Questions
+
+- None
+
+### Next Week
+
+- I still haven't finished documentation, so that seems to be only thing left to do. One more test may be with bigger data too to check that generated data is unique.

@@ -127,6 +127,7 @@ class MarkovPlayer:
         notes = self._markov.generate_melody(
             prefix_notes=prefix_notes, depth=depth, melody_length=melody_length
         )
+        print(notes)
         print("Melody generation is complete.")
         return notes
 
