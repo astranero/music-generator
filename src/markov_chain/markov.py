@@ -19,8 +19,28 @@ class MarkovChain:
         """
         return self._trie
 
-    def insert(self, notes: List[int]):
-        self._trie.insert(notes)
+    def _notes_depth_size_sublist(
+        self, notes: List[int], depth: int
+    ) -> List[List[int]]:
+        """A method to split notes in the track into smaller depth sized sublists.
+        Args:
+            notes (List[int]): Notes from the track
+            depth (int): The size of the sublists
+
+        Yields:
+            Iterator[List[List[int]]]: A sublist of sized depth that contain notes
+        """
+        for i in range(len(notes) - depth + 1):
+            yield notes[i : i + depth]
+
+    def insert(self, notes: List[int], depth: int = 2):
+        """A method to insert notes of depth sized sublists into Trie.
+        Args:
+            notes (List[int]): The notes from the track
+            depth (int, optional): The order of the trie. Defaults to 2.
+        """
+        for sequence in self._notes_depth_size_sublist(notes, depth=depth):
+            self._trie.insert(sequence)
 
     def generate_melody(
         self,
@@ -45,33 +65,21 @@ class MarkovChain:
                 A sequence of generate notes
         """
 
-        node = self._trie.get_root()
         if not prefix_notes:
-            try:
-                prefix_notes = [
-                    self._trie.get_random_note(node) for i in range(depth + 1)
-                ]
-            except:
-                print("Generation of prefix_notes wasn't possible.")
-                return
+            prefix_notes = []
 
         self._prefix_length = len(prefix_notes)
         self._melody = prefix_notes
-        node = self._trie.search(prefix_notes)
+        current_node = self._trie.search(self._trie.get_root(), prefix_notes)
 
         while len(self._melody) <= melody_length - self._prefix_length:
-            current_node = node
-            if not current_node.terminal:
-                new_note = self._trie.get_random_note(current_node)
-                if new_note:
-                    self._melody.append(new_note)
-                    node = current_node.children[new_note]
-                else:
-                    current = self._melody[-depth:]
-                    node = self._trie.search(current)
-
-            elif current_node.terminal:
+            if current_node.terminal:
+                last_notes = self._melody[-depth:]
                 self._melody.append(current_node.note)
                 current_node = self._trie.get_root()
 
+            new_note = self._trie.get_random_note(current_node)
+            self._melody.append(new_note)
+            last_notes = self._melody[-depth:]
+            current_node = self._trie.search(current_node, last_notes)
         return self._melody

@@ -53,14 +53,13 @@ class Trie:
             node = node.children[note]
         node.terminal = True
 
-    def search(self, sequence: List[int]):
+    def search(self, node: Node, sequence: List[int]):
         """
         Search a note that follows a sequence of notes in the trie.
         Args:
             - sequence (List[int]):
                 a list of notes
         """
-        node = self._root
         for note in sequence:
             if note in node.children:
                 node = node.children[note]
@@ -95,4 +94,3 @@ class Trie:
 
         if probabilities and notes:
             return random.choices(population=notes, weights=probabilities, k=1)[0]
-        return None

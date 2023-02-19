@@ -39,7 +39,7 @@ class MarkovPlayer:
         """A method to fetch midi filenames.
 
         Returns:
-            - List[str]: 
+            - List[str]:
                 A list of filenames.
         """
 
@@ -91,14 +91,6 @@ class MarkovPlayer:
                     notes.append(msg.note)
             yield notes
 
-    def _notes_depth_size_sublist(
-        self, tracks: List[MidiTrack], depth: int
-    ) -> List[List[int]]:
-
-        for notes in self._track_messages_to_notes(tracks):
-            for i in range(len(notes) - depth + 1):
-                yield notes[i : i + depth]
-
     def _insert_into_trie(self, tracks: List[MidiTrack], depth: int) -> None:
         """A method that inserts string notes of lenght 2 to 12 i from MidiTrack objects
         into Markov Chains Trie data structure.
@@ -108,8 +100,9 @@ class MarkovPlayer:
                 A list of MidiTrack objects.
         """
 
-        for sequence in self._notes_depth_size_sublist(tracks, depth=depth):
-            self._markov.insert(sequence)
+        for notes in self._track_messages_to_notes(tracks):
+            print(notes)
+            self._markov.insert(notes, depth)
 
     def _generate_notes(
         self,
@@ -140,7 +133,7 @@ class MarkovPlayer:
         """A method that creates a midifile using a Markov Chain.
 
         Returns:
-            - MidiFile: 
+            - MidiFile:
                 A MidiFile object.
         """
         notes = self._generate_notes(
