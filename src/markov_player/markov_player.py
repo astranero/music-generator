@@ -101,7 +101,6 @@ class MarkovPlayer:
         """
 
         for notes in self._track_messages_to_notes(tracks):
-            print(notes)
             self._markov.insert(notes, depth)
 
     def _generate_notes(
@@ -120,7 +119,6 @@ class MarkovPlayer:
         notes = self._markov.generate_melody(
             prefix_notes=prefix_notes, depth=depth, melody_length=melody_length
         )
-        print(notes)
         print("Melody generation is complete.")
         return notes
 

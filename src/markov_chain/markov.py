@@ -61,13 +61,12 @@ class MarkovChain:
 
         Returns:
             - List[int]:
-                A sequence of generate notes
+                A sequence of generated notes
         """
         melody = []
         if not prefix_notes:
             prefix_notes = []
 
-        self._prefix_length = len(prefix_notes)
         melody = prefix_notes
         current_node = self._trie.search(self._trie.get_root(), prefix_notes)
 

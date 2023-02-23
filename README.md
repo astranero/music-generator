@@ -11,6 +11,12 @@ Generator can also play the generated mav file using pygame mixer.
 
 ## Installation and Instructions
 
+- Install poetry: `pip install poetry`
+- Dependency installation: `poetry install`
+- Start the project: `poetry run invoke start`
+- Run tests: `poetry run invoke test`
+- Run pylint: `poetry run invoke lint`
+
 ## Links
 
 [Weekly reports](https://github.com/astranero/music-generator/blob/main/Documentation/Weekly_reports.md)
