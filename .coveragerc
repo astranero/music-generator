@@ -2,4 +2,4 @@
 branch = True
 
 source=src
-omit=src/main.py, *__init__.py, src/ui/ui.py, src/markov_player.py
+omit=src/main.py, *__init__.py, src/ui/ui.py, src/markov_player/markov_player.py
