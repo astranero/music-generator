@@ -3,6 +3,8 @@
 ## Unit testing
 
 [Coverage report for tests](https://astranero.github.io/music-generator/)
+![image](https://user-images.githubusercontent.com/77237218/221368657-ed2c0ced-8879-4f14-aa32-1f58110abe65.png)
+
 
 ### MarkovChain
 
