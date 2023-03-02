@@ -19,16 +19,22 @@ class TestMarkov:
         """
         Test generates correct melody sequence
         """
-        markov = MarkovChain(trie=pytest.trie)
-        markov.insert(["A", "B", "C", "B"], depth=4)
-        markov.insert(["A", "B", "D", "C"], depth=4)
-        markov.insert(["A", "A", "F", "E"], depth=4)
 
+        markov = MarkovChain(trie=pytest.trie)
+        markov.insert(
+            ["U", "H", "S", "F", "U", "I", "H", "S", "U", "H", "U", "H"], depth=4
+        )
         melody = markov.generate_melody(
-            prefix_notes=["A", "B"], depth=3, melody_length=4
+            prefix_notes=["U", "H", "S"], depth=3, melody_length=4
         )
         melody = "".join(melody)
-        assert (melody == "ABCB") or (melody == "ABDC")
+        assert melody == "UHSF"
+
+        melody = markov.generate_melody(
+            prefix_notes=["H", "S", "F"], depth=3, melody_length=4
+        )
+        melody = "".join(melody)
+        assert melody == "HSFU"
 
     def test_nonexisting_note_generate_melody(self):
         """
