@@ -32,7 +32,6 @@ class UserInterface:
         print(
             """______________________________________________________________________________________"""
         )
-        tprint("Music Generator")
         self._print_picture()
         while True:
             print(self._start_commands())
