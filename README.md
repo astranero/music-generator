@@ -11,8 +11,10 @@ Generator can also play the generated mav file using pygame mixer.
 
 ## Installation and Instructions
 
-This project is using python3.10 and poetry version 1.4.0
-Fluidsynth has to be installed for this to work.
+This project is using python3.10 and poetry version 1.4.0.
+
+Fluidsynth has to be installed for project  to work.
+
 `sudo apt-get install fluidsynth`
 
 
