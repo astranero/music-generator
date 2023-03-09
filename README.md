@@ -10,7 +10,7 @@ Music Generator 1.0 is a project where Markov Chain and Trie Data Structure has 
 Generator can also play the generated mav file using pygame mixer.
 
 ## Installation and Instructions
-
+This project is using python3.10 and poetry version 1.4.0
 - Install poetry: `pip install poetry`
 - Activate env: `poetry shell`
 - Dependency installation: `poetry install`
