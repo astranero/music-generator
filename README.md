@@ -17,6 +17,16 @@ Fluidsynth has to be installed for project  to work.
 
 `sudo apt-get install fluidsynth`
 
+You will also need .env file in the root directory:
+
+```
+# Soundfont path from the root
+SOUNDFONT = "<name of a soundfont file>"
+# Path from the root to the data folder
+DATA_PATH = "/Data/"
+```
+If you are using a soundfont, then you will need to specify it in the .env file as a variable _SOUNDFONT_.
+_DATA_PATH_ Variable is the location of a data that needs to be inserted in to the trie for generation of melody.
 
 - Install poetry: `pip install poetry`
 - Activate env: `poetry shell`
