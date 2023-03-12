@@ -26,6 +26,7 @@ SOUNDFONT = "<name of a soundfont file>"
 DATA_PATH = "/Data/"
 ```
 If you are using a soundfont, then you will need to specify it in the .env file as a variable _SOUNDFONT_.
+
 _DATA_PATH_ Variable is the location of a data that needs to be inserted in to the trie for generation of melody.
 
 - Install poetry: `pip install poetry`
